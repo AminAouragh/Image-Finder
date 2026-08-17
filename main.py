@@ -17,7 +17,7 @@ zoeken_actief = False
 
 def stuur_notificatie(gevonden_afbeelding):
     data = {
-        "content": f"Begin te kijken **{gevonden_afbeelding}** is er"
+        "content": f"<@862234384790454272> Begin te kijken **{gevonden_afbeelding}** is er"
     }
     response = requests.post(WEBHOOK_URL, json=data)
 
