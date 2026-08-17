@@ -5,9 +5,13 @@ import threading
 import pyautogui
 import requests
 import time
+import os
+from dotenv import load_dotenv
 
-# --- INSTELLINGEN ---
-WEBHOOK_URL = 'https://discord.com/api/webhooks/1504506866217255083/QxN-eIEhQ9-32qbuj4dUt8Xp-N-MtTNH9AmPDpLSk3oe22LepxkzB44cM3X2vasCX7sv'
+load_dotenv()
+
+WEBHOOK_URL = os.getenv("WEBHOOK_URL")
+DISCORD_USER_ID = os.getenv("DISCORD_USER_ID")
 AFBEELDINGEN = [
     'images/galaxy.png',
     'images/Stellar.png'
@@ -17,7 +21,7 @@ zoeken_actief = False
 
 def stuur_notificatie(gevonden_afbeelding):
     data = {
-        "content": f"<@862234384790454272> Begin te kijken **{gevonden_afbeelding}** is er"
+        "content": f"<@{DISCORD_USER_ID}> Begin te kijken **{gevonden_afbeelding}** is er"
     }
     response = requests.post(WEBHOOK_URL, json=data)
 
