@@ -17,7 +17,7 @@ AFBEELDINGEN = [
     'images/galaxy.png',
     'images/Stellar.png',
     'images/Astral.png',
-    'images/Radiant.png'
+    'images/image.png',
 ]
 
 zoeken_actief = False
@@ -31,16 +31,40 @@ def vind_bestand(bestandsnaam):
     pad = os.path.join(basis_pad, bestandsnaam)
     return os.path.normpath(pad)
 
-def stuur_notificatie(gevonden_afbeelding):
-    data = {
-        "content": f"<@{DISCORD_USER_ID}> Begin te kijken **{gevonden_afbeelding}** is er"
-    }
-    response = requests.post(WEBHOOK_URL, json=data)
 
-    if response.status_code == 204:
-        log(f"Notificatie voor {gevonden_afbeelding} succesvol verstuurd.")
-    else:
-        log(f"Fout bij sturen notificatie: {response.status_code}")
+def stuur_notificatie(gevonden_afbeelding):
+    if not WEBHOOK_URL or not DISCORD_USER_ID:
+        log("❌ Fout: .env bestand ontbreekt of is leeg!")
+        return
+
+    screenshot_naam = "tijdelijke_screenshot.png"
+    pyautogui.screenshot(screenshot_naam)
+
+    data = {
+        "content": f"<@{DISCORD_USER_ID}> Begin te kijken! **{gevonden_afbeelding}** is zojuist gevonden."
+    }
+
+    try:
+        with open(screenshot_naam, "rb") as f:
+            files = {"file": (screenshot_naam, f, "image/png")}
+
+            response = requests.post(WEBHOOK_URL, data=data, files=files)
+
+        if response.status_code in (200, 204):
+            log(
+                f"Notificatie inclusief screenshot voor {gevonden_afbeelding} verstuurd.")
+        else:
+            log(f"Fout bij sturen notificatie: {response.status_code}")
+
+    except Exception as e:
+        log(f"❌ Kan de screenshot of notificatie niet sturen: {e}")
+
+    finally:
+        if os.path.exists(screenshot_naam):
+            try:
+                os.remove(screenshot_naam)
+            except Exception:
+                pass
 
 
 def zoek_loop():
