@@ -15,7 +15,9 @@ WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 DISCORD_USER_ID = os.getenv("DISCORD_USER_ID")
 AFBEELDINGEN = [
     'images/galaxy.png',
-    'images/Stellar.png'
+    'images/Stellar.png',
+    'images/Astral.png',
+    'images/Radiant.png'
 ]
 
 zoeken_actief = False
