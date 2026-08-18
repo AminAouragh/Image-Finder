@@ -6,6 +6,7 @@ import pyautogui
 import requests
 import time
 import os
+import sys
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -18,6 +19,15 @@ AFBEELDINGEN = [
 ]
 
 zoeken_actief = False
+
+def vind_bestand(bestandsnaam):
+    try:
+        basis_pad = sys._MEIPASS
+    except Exception:
+        basis_pad = os.path.abspath(".")
+
+    pad = os.path.join(basis_pad, bestandsnaam)
+    return os.path.normpath(pad)
 
 def stuur_notificatie(gevonden_afbeelding):
     data = {
@@ -41,7 +51,8 @@ def zoek_loop():
                 break
 
             try:
-                locatie = pyautogui.locateOnScreen(afbeelding, confidence=0.8)
+                absoluut_pad = vind_bestand(afbeelding)
+                locatie = pyautogui.locateOnScreen(absoluut_pad, confidence=0.8)
 
                 if locatie is not None:
                     log(f"✅ {afbeelding} gevonden!")
